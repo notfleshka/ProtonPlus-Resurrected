@@ -20,8 +20,8 @@ RV_REPO="https://api.github.com/repos/Rv-Project/RvClang/releases/latest"
 GCC_REPO="https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9"
 GCC64_REPO="https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9"
 # AnyKernel3
-AK3_URL="https://github.com/Flopster101/AnyKernel3"
-AK3_BRANCH="floppy-reborn"
+AK3_URL="https://github.com/ProtonKernel/AnyKernel3"
+AK3_BRANCH="a572q"
 
 # Custom toolchain directory
 if [[ -z "$CUST_DIR" ]]; then
@@ -72,8 +72,8 @@ ZC_DIR="$WP/zycclang"
 RV_DIR="$WP/rvclang"
 KDIR="$(readlink -f .)"
 USE_GCC_BINUTILS="0"
-OUT_IMAGE="out/arch/arm64/boot/Image.gz"
-OUT_DTBO="out/arch/arm64/boot/dtbo.img"
+OUT_IMAGE="out/arch/arm64/boot/Image.gz-dtb"
+OUT_DTBO="out/arch/arm64/boot/dts/qcom/atoll-ab-idp.dtb"
 
 ## Customizable vars
 
