@@ -78,7 +78,7 @@ OUT_DTBO="out/arch/arm64/boot/dts/qcom/atoll-ab-idp.dtb"
 ## Customizable vars
 
 # FloppyKernel version
-PROTON_VER="v1.0-rc1"
+PROTON_VER="v1.0"
 
 # Toggles
 USE_CCACHE=1

@@ -68,7 +68,7 @@ struct cred *get_new_cred(struct cred *cred)
 		atomic_inc(&cred->usage);
 	return cred;
 }
-
+/*
 void put_cred(const struct cred *_cred)
 {
 	struct cred *cred = (struct cred *) _cred;
@@ -83,6 +83,8 @@ void put_cred(const struct cred *_cred)
 			__put_cred(cred);
 	}
 }
+*/
+
 #endif /* CONFIG_RKP_KDP */
 
 /*
@@ -319,7 +321,7 @@ const struct cred *get_task_cred(struct task_struct *task)
 	do {
 		cred = __task_cred((task));
 		BUG_ON(!cred);
-	} while (!get_cred_rcu(cred));
+	} while (!atomic_inc_not_zero(&((struct cred *)cred)->usage));
 #endif
 
 	rcu_read_unlock();

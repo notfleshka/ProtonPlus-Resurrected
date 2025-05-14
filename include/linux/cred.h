@@ -332,9 +332,6 @@ static inline const struct cred *get_cred(const struct cred *cred)
  * on task_struct are attached by const pointers to prevent accidental
  * alteration of otherwise immutable credential sets.
  */
-#ifdef CONFIG_RKP_KDP
-void put_cred(const struct cred *_cred);
-#else
 static inline const struct cred *get_cred_rcu(const struct cred *cred)
  {
 	 struct cred *nonconst_cred = (struct cred *) cred;
@@ -344,7 +341,7 @@ static inline const struct cred *get_cred_rcu(const struct cred *cred)
 		 return NULL;
 	 validate_creds(cred);
 	 return cred;
- }
+}
 
 static inline void put_cred(const struct cred *_cred)
 {
@@ -354,7 +351,6 @@ static inline void put_cred(const struct cred *_cred)
 	if (atomic_dec_and_test(&(cred)->usage))
 		__put_cred(cred);
 }
-#endif
 
 /**
  * current_cred - Access the current task's subjective credentials
