@@ -534,7 +534,7 @@ prep_build() {
 
 build() {
     mkdir -p out
-    make O=out ARCH=arm64 "$DEFCONFIG" $([[ "$DO_KSU" == "1" ]] && echo "ksu.config") 2>&1 | tee log.txt
+    make O=out ARCH=arm64 "$DEFCONFIG" $([[ "$DO_KSU" == "1" ]] && echo "vendor/ksu.config") 2>&1 | tee log.txt
 
     # Delete leftovers
     rm -f out/arch/arm64/boot/Image*
