@@ -20,8 +20,10 @@ RV_REPO="https://api.github.com/repos/Rv-Project/RvClang/releases/latest"
 GCC_REPO="https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9"
 GCC64_REPO="https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9"
 # AnyKernel3
-AK3_URL="https://github.com/ProtonKernel/AnyKernel3"
+AK3_URL="https://github.com/notfleshka/AnyKernel3-Proton-Resurrected"
 AK3_BRANCH="a572q"
+# Local
+WP="$(pwd)"
 
 # Custom toolchain directory
 if [[ -z "$CUST_DIR" ]]; then
@@ -49,15 +51,15 @@ if [[ ! -d drivers ]]; then
 fi
 
 if [[ "$IS_GP" == "1" ]]; then
-    export KBUILD_BUILD_USER="FPSensor"
-    export KBUILD_BUILD_HOST="fpc"
+    export KBUILD_BUILD_USER="notfleshka"
+    export KBUILD_BUILD_HOST="notfleshka"
 fi
 
 # Other
-KERNEL_URL="https://github.com/ProtonKernel/ProtonForA572Q"
+KERNEL_URL="https://github.com/notfleshka/ProtonPlus-Resurrected"
 SECONDS=0 # builtin bash timer
 DATE="$(date '+%Y%m%d-%H%M')"
-BUILD_HOST="$USER@$(hostname)"
+BUILD_HOST="notfleshka"
 # Paths
 SD_DIR="$WP/sdclang"
 AC_DIR="$WP/aospclang"
@@ -84,16 +86,16 @@ PROTON_VER="v1.0"
 USE_CCACHE=1
 
 ## Parse arguments
+DO_CLEANUP=1
 DO_KSU=0
-DO_CLEAN=0
+DO_CLEAN=1
 DO_MENUCONFIG=0
 IS_RELEASE=0
-DO_TG=0
 DO_REGEN=0
 DO_BASHUP=0
 DO_FLTO=0
 DO_A52Q=0
-DO=A72Q=0
+DO_A72Q=1
 
 for arg in "$@"; do
     if [[ "$arg" == *m* ]]; then
@@ -111,10 +113,6 @@ for arg in "$@"; do
     if [[ "$arg" == *R* ]]; then
         echo "INFO: Release build enabled"
         IS_RELEASE=1
-    fi
-    if [[ "$arg" == *t* ]]; then
-        echo "INFO: Telegram upload enabled"
-        DO_TG=1
     fi
     if [[ "$arg" == *o* ]]; then
         echo "INFO: bashupload upload enabled"
@@ -160,7 +158,7 @@ fi
 
 IS_RELEASE=0
 TEST_CHANNEL=1
-#TEST_BUILD=0
+TEST_BUILD=1
 
 # Upload build log
 LOG_UPLOAD=1
@@ -175,16 +173,6 @@ fi
 ## Info message
 LINKER="ld.lld"
 
-## Secrets
-if [ $DO_TG -eq 1 ]; then
-IDS="$WP/ids"
-## Secrets
-if ! [ -d "$IDS" ]; then
-    git clone -q https://github.com/ProtonKernel/ids $IDS
-fi
-TELEGRAM_CHAT_ID="$(cat ../ids/chat_ci)"
-TELEGRAM_BOT_TOKEN=$(cat ../ids/bot_token)
-fi
 
 ## Build type
 LINUX_VER=$(make kernelversion 2>/dev/null)
@@ -205,12 +193,12 @@ else
     CK_TYPE_SHORT="V"
 fi
 
-ZIP_PATH="$WP/ProtonPlus_$PROTON_VER-$CK_TYPE-$CODENAME-$DATE.zip"
+ZIP_PATH="$WP/ProtonPlus_Resurrected_$PROTON_VER-$CK_TYPE-$CODENAME-$DATE.zip"
 
 echo -e "\nINFO: Build info:
 - Device: $DEVICE ($CODENAME)
 - Addons: $CK_TYPE
-- ProtonPlus version: $FK_VER
+- ProtonPlus-Resurrected version: $FK_VER
 - Linux version: $LINUX_VER
 - Defconfig: $DEFCONFIG
 - Build date: $DATE
@@ -506,15 +494,6 @@ CAPTION_BUILD="Build info:
 *Clean build*: \`$([ "$DO_CLEAN" -eq 1 ] && echo Yes || echo No)\`
 "
 
-# Functions to send file(s) via Telegram's BOT api.
-tgs() {
-    MD5=$(md5sum "$1" | cut -d' ' -f1)
-    curl -fsSL -X POST -F document=@"$1" https://api.telegram.org/bot"${TELEGRAM_BOT_TOKEN}"/sendDocument \
-        -F "chat_id=${TELEGRAM_CHAT_ID}" \
-        -F "parse_mode=Markdown" \
-        -F "disable_web_page_preview=true" \
-        -F "caption=${CAPTION_BUILD}*MD5*: \`$MD5\`" &>/dev/null
-}
 
 prep_build() {
     ## Prepare ccache
@@ -537,9 +516,9 @@ build() {
     make O=out ARCH=arm64 "$DEFCONFIG" $([[ "$DO_KSU" == "1" ]] && echo "vendor/ksu.config") 2>&1 | tee log.txt
 
     # Delete leftovers
-    rm -f out/arch/arm64/boot/Image*
-    rm -f out/arch/arm64/boot/dtbo*
-    rm -f log.txt
+    # rm -f out/arch/arm64/boot/Image*
+    # rm -f out/arch/arm64/boot/dtbo*
+    # rm -f log.txt
 
     export LLVM=1 LLVM_IAS=1
     export ARCH=arm64
@@ -628,7 +607,7 @@ post_build() {
     ## Copy the built binaries
     cp "$OUT_IMAGE" "$AK3_DIR"
     cp "$OUT_DTBO" "$AK3_DIR"
-    rm -f *zip
+    # rm -f *zip
 
     ## Prepare kernel flashable zip
     cd "$AK3_DIR"
@@ -653,28 +632,30 @@ upload() {
     curl -T "$ZIP_PATH" bashupload.com; echo
     fi
 
-    if [[ "$DO_TG" == "1" ]]; then
-            echo -e "\nINFO: Uploading to Telegram...\n"
-            tgs "$ZIP_PATH"
-            echo "INFO: Done!"
-    fi
     if [[ "$LOG_UPLOAD" == "1" ]]; then
         echo -e "\nINFO: Uploading log to bashupload.com\n"
         curl -T log.txt bashupload.com
     fi
     # Delete any leftover zip files
-    # rm -f "$WP/FloppyKernel*zip"
+    if [[ "$DO_CLEANUP" == "1" ]]; then
+        rm -f "$WP/FloppyKernel*zip"
+    fi
 }
 
 clean() {
+    if [[ "$DO_CLEANUP" == "1" ]]; then
+    echo -e "INFO: Cleaning after build, phase 1..."
     make O=out clean
     make O=out mrproper
-}
+    fi
+ }
 
 clean_tmp() {
-    echo -e "INFO: Cleaning after build..."
+    if [[ "$DO_CLEANUP" == "1" ]]; then
+    echo -e "INFO: Cleaning after build, phase 2..."
     rm -f "$OUT_IMAGE"
     rm -f "$OUT_DTBO"
+    fi
 }
 
 ## Run build
