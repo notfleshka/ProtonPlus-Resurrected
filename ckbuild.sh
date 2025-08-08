@@ -86,20 +86,20 @@ PROTON_VER="v1.0"
 USE_CCACHE=1
 
 ## Parse arguments
-DO_CLEANUP=1
+DO_CLEANUP=0
 DO_KSU=0
-DO_CLEAN=1
+DO_CLEAN=0
 DO_MENUCONFIG=0
 IS_RELEASE=0
 DO_REGEN=0
 DO_BASHUP=0
 DO_FLTO=0
 DO_A52Q=0
-DO_A72Q=1
+DO_A72Q=0
 
 for arg in "$@"; do
     if [[ "$arg" == *m* ]]; then
-        echo "INFO: menuconfig enabled"
+        echo "INFO: Menuconfig enabled"
         DO_MENUCONFIG=1
     fi
     if [[ "$arg" == *k* ]]; then
@@ -107,7 +107,7 @@ for arg in "$@"; do
         DO_KSU=1
     fi
     if [[ "$arg" == *c* ]]; then
-        echo "INFO: clean build enabled"
+        echo "INFO: Clean build enabled"
         DO_CLEAN=1
     fi
     if [[ "$arg" == *R* ]]; then
@@ -115,11 +115,11 @@ for arg in "$@"; do
         IS_RELEASE=1
     fi
     if [[ "$arg" == *o* ]]; then
-        echo "INFO: bashupload upload enabled"
+        echo "INFO: Bashupload upload enabled"
         DO_BASHUP=1
     fi
     if [[ "$arg" == *r* ]]; then
-        echo "INFO: config regeneration mode"
+        echo "INFO: Config regeneration mode"
         DO_REGEN=1
     fi
     if [[ "$arg" == *l* ]]; then
