@@ -88,6 +88,7 @@ USE_CCACHE=1
 ## Parse arguments
 DO_CLEANUP=0
 DO_KSU=0
+DELETE_LEFTOVERS=0
 DO_CLEAN=0
 DO_MENUCONFIG=0
 IS_RELEASE=0
@@ -516,9 +517,12 @@ build() {
     make O=out ARCH=arm64 "$DEFCONFIG" $([[ "$DO_KSU" == "1" ]] && echo "vendor/ksu.config") 2>&1 | tee log.txt
 
     # Delete leftovers
-    # rm -f out/arch/arm64/boot/Image*
-    # rm -f out/arch/arm64/boot/dtbo*
-    # rm -f log.txt
+    if [[ "$DELETE_LEFTOVERS" == "1" ]]; then 
+        echo -e "INFO: Deleting leftovers"
+        rm -f out/arch/arm64/boot/Image*
+        rm -f out/arch/arm64/boot/dtbo*
+        rm -f log.txt
+    fi
 
     export LLVM=1 LLVM_IAS=1
     export ARCH=arm64
