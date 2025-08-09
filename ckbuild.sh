@@ -611,7 +611,7 @@ post_build() {
     ## Copy the built binaries
     cp "$OUT_IMAGE" "$AK3_DIR"
     cp "$OUT_DTBO" "$AK3_DIR"
-    # rm -f *zip
+    rm -f *zip
 
     ## Prepare kernel flashable zip
     cd "$AK3_DIR"
