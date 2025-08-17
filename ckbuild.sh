@@ -97,6 +97,9 @@ DO_BASHUP=0
 DO_FLTO=0
 DO_A52Q=0
 DO_A72Q=0
+TEST_CHANNEL=1
+TEST_BUILD=1
+LOG_UPLOAD=1
 
 for arg in "$@"; do
     if [[ "$arg" == *m* ]]; then
@@ -157,12 +160,8 @@ else
     BUILD_TYPE="Testing"
 fi
 
-IS_RELEASE=0
-TEST_CHANNEL=1
-TEST_BUILD=1
 
-# Upload build log
-LOG_UPLOAD=1
+
 
 # Pick aosp, proton, rm69, lolz, slim, greenforce, zyc, rv, custom
 if [[ -z "$CLANG_TYPE" ]]; then
