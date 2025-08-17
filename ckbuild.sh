@@ -96,10 +96,10 @@ DO_REGEN=0
 DO_BASHUP=0
 DO_FLTO=0
 DO_A52Q=0
-DO_A72Q=0
+DO_A72Q=1
 TEST_CHANNEL=1
 TEST_BUILD=1
-LOG_UPLOAD=1
+LOG_UPLOAD=0
 
 for arg in "$@"; do
     if [[ "$arg" == *m* ]]; then
@@ -512,6 +512,8 @@ prep_build() {
 }
 
 build() {
+    export LLVM=1 LLVM_IAS=1
+    export ARCH=arm64
     mkdir -p out
     make O=out ARCH=arm64 "$DEFCONFIG" $([[ "$DO_KSU" == "1" ]] && echo "vendor/ksu.config") 2>&1 | tee log.txt
 
@@ -523,8 +525,6 @@ build() {
         rm -f log.txt
     fi
 
-    export LLVM=1 LLVM_IAS=1
-    export ARCH=arm64
 
     if [[ "$DO_MENUCONFIG" == "1" ]]; then
         make O=out menuconfig
@@ -591,8 +591,10 @@ post_build() {
         echo -e "\nINFO: Kernel compiled succesfully! Zipping up..."
     else
         echo -e "\nERROR: Kernel files not found! Compilation failed?"
-        echo -e "\nINFO: Uploading log to bashupload.com\n"
-        curl -T log.txt bashupload.com
+        if [[ "$LOG_UPLOAD" == "1" ]]; then
+            echo -e "\nINFO: Uploading log to bashupload.com\n"
+            curl -T log.txt bashupload.com
+        fi
         exit 1
     fi
 
