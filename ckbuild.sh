@@ -88,15 +88,16 @@ USE_CCACHE=1
 ## Parse arguments
 DO_CLEANUP=0
 DO_KSU=0
+DO_APATCH=1
 DELETE_LEFTOVERS=0
-DO_CLEAN=0
+DO_CLEAN=1
 DO_MENUCONFIG=0
 IS_RELEASE=0
 DO_REGEN=0
 DO_BASHUP=0
 DO_FLTO=0
 DO_A52Q=0
-DO_A72Q=0
+DO_A72Q=1
 TEST_CHANNEL=1
 TEST_BUILD=1
 LOG_UPLOAD=0
@@ -109,6 +110,11 @@ for arg in "$@"; do
     if [[ "$arg" == *k* ]]; then
         echo "INFO: KernelSU enabled"
         DO_KSU=1
+    fi
+    if [[ "$arg" == *p* ]]; then
+        echo "INFO: APatch enabled"
+        echo "WARNING: Samsung securities will be disabled because of APatch"
+        DO_APATCH=1
     fi
     if [[ "$arg" == *c* ]]; then
         echo "INFO: Clean build enabled"
@@ -141,6 +147,10 @@ for arg in "$@"; do
     fi
 done
 
+if [[ "$DO_KSU" == "1" && "$DO_APATCH" == "1" ]]; then
+    echo "Error: Cannot enable both KernelSU and APatch at the same time."
+    exit 1
+fi
 if [ $DO_A72Q -eq 1 ]; then
     CODENAME="a72q"
     DEFAULT_DEFCONFIG="vendor/lineage-a72q_defconfig"
@@ -188,6 +198,9 @@ CK_TYPE_SHORT=""
 if [[ "$DO_KSU" == "1" ]]; then
     CK_TYPE="KSUNext"
     CK_TYPE_SHORT="KN"
+elif [[ "$DO_APATCH" == "1" ]]; then
+    CK_TYPE="APatch"
+    CK_TYPE_SHORT="AP"
 else
     CK_TYPE="Vanilla"
     CK_TYPE_SHORT="V"
@@ -515,7 +528,11 @@ build() {
     export LLVM=1 LLVM_IAS=1
     export ARCH=arm64
     mkdir -p out
-    make O=out ARCH=arm64 "$DEFCONFIG" $([[ "$DO_KSU" == "1" ]] && echo "vendor/ksu.config") 2>&1 | tee log.txt
+
+    EXTRA_CONFIGS=()
+    [[ "$DO_KSU" == "1" ]] && EXTRA_CONFIGS+=("vendor/ksu.config")
+    [[ "$DO_APATCH" == "1" ]] && EXTRA_CONFIGS+=("vendor/apatch.config")
+    make O=out ARCH=arm64 "$DEFCONFIG" ${EXTRA_CONFIGS[*]} 2>&1 | tee log.txt
 
     # Delete leftovers
     if [[ "$DELETE_LEFTOVERS" == "1" ]]; then 
@@ -531,8 +548,8 @@ build() {
     fi
 
     if [[ "$DO_REGEN" == "1" ]]; then
-        if [[ "$DO_KSU" = "1" ]]; then
-             echo "ERROR: Can't regenerate with KSU argument"
+        if [[ "$DO_KSU" = "1" && "$DO_APATCH" = "1" ]]; then
+             echo "ERROR: Can't regenerate with KSU or APatch argument"
              exit 1
         fi
         cp -f out/.config "arch/arm64/configs/$DEFCONFIG"
