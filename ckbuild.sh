@@ -86,10 +86,10 @@ PROTON_VER="v1.0"
 USE_CCACHE=1
 
 ## Parse arguments
-DO_CLEANUP=0
+DO_CLEANUP=1
 DO_KSU=0
-DO_APATCH=1
-DELETE_LEFTOVERS=0
+DO_APATCH=0  ## EXPERIMENTAL!!!!!
+DELETE_LEFTOVERS=1
 DO_CLEAN=1
 DO_MENUCONFIG=0
 IS_RELEASE=0
@@ -112,7 +112,7 @@ for arg in "$@"; do
         DO_KSU=1
     fi
     if [[ "$arg" == *p* ]]; then
-        echo "INFO: APatch enabled"
+        echo "INFO: Experimental APatch support enabled"
         echo "WARNING: Samsung securities will be disabled because of APatch"
         DO_APATCH=1
     fi
