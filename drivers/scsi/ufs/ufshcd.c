@@ -4507,7 +4507,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
 			if (has_read_lock)
 				ufshcd_put_read_lock(hba);
 			cmd->scsi_done(cmd);
-			return 0;
+			err = 0;
+			goto out_pm_qos;
 		}
 		goto out;
 	}
