@@ -9,6 +9,11 @@ patch -p1 < 0001-Kernel-Implement-SUSFS-v1.5.3.patch
 After this, take a look into logs, not all patches have been applied due to conflicts. In "susfsksufolder" there are patched files which couldn't be patched using .patch file, using logs from previous command, figure out where to put these files.
 
 After overriding previous files with new ones, you can build the kernel and susfs will be present.
+# There is no KernelSU-Next
+In some cases github cannot clone folder containing it. In this case, run this command:
+```
+curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+```
 # What even is this?
 This is an attempt to resurrect ProtonPlus kernel for Samsung Galaxy A52 and A72.
 ## What is the point if there's original version?
