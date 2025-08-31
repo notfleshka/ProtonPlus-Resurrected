@@ -1,3 +1,14 @@
+# Welcome to ksu-susfs branch
+This branch is for building in KernelSU-Next and susfs. KernelSU-Next is already added, no extra steps required. Susfs is a different story. Here's a guide:
+Run these commands:
+```
+cd KernelSU-Next
+curl -o 0001-Kernel-Implement-SUSFS-v1.5.3.patch https://github.com/sidex15/KernelSU-Next/commit/1e750de25930e875612bbec0410de0088474c00b.patch
+patch -p1 < 0001-Kernel-Implement-SUSFS-v1.5.3.patch
+```
+After this, take a look into logs, not all patches have been applied due to conflicts. In "susfsksufolder" there are patched files which couldn't be patched using .patch file, using logs from previous command, figure out where to put these files.
+
+After overriding previous files with new ones, you can build the kernel and susfs will be present.
 # What even is this?
 This is an attempt to resurrect ProtonPlus kernel for Samsung Galaxy A52 and A72.
 ## What is the point if there's original version?
