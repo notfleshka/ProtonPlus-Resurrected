@@ -221,13 +221,23 @@ echo -e "\nINFO: Build info:
 
 install_deps_deb() {
     # Dependencies
-    UB_DEPLIST="lz4 brotli flex bc cpio kmod ccache zip libtinfo5 python3"
+    UB_DEPLIST="make lz4 brotli flex bc cpio kmod ccache zip libtinfo5 python3"
     if grep -q "Ubuntu" /etc/os-release; then
         sudo apt update -qq
         sudo apt install $UB_DEPLIST -y
     else
         echo "INFO: Your distro is not Ubuntu, skipping dependencies installation..."
         echo "INFO: Make sure you have these dependencies installed before proceeding: $UB_DEPLIST"
+        read -p "Are these dependencies installed? (y/n): " confirm
+        case "${confirm,,}" in
+            y|yes)
+                echo "INFO: Continuing..."
+                ;;
+            *)
+                echo "ERROR: Please install the dependencies manually before proceeding."
+                exit 1
+                ;;
+        esac
     fi
 }
 
