@@ -1,15 +1,15 @@
 # This project is discontinued
-Tensor decided to continue supporting ProtonPlus kernel, so there's no point in this fork. Let's look into changes I've managed to make:
+**Tensor decided to continue supporting ProtonPlus kernel, so there's no point in this fork. Let's look into changes I've managed to make:**
 
-Updated KSU-Next to v1.0.9 and added SuSFS.
+**Updated KSU-Next to v1.0.9 and added SuSFS.**
 
-Added experimental APatch compatibility(not finished tho :( ).
+**Added experimental APatch compatibility(not finished tho :( ).**
 
-Added Android 16 support (thanks to Testamic).
+**Added Android 16 support (thanks to Testamic).**
 
-Modified build script to make it more debuggable and informative.
+**Modified build script to make it more debuggable and informative.**
 
-I guess that's all, thanks for some people who supported this fork. Goodbye.
+**I guess that's all, thanks to some people who supported this fork. Goodbye.**
 
 
 ## What even is this?
