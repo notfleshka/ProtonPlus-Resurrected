@@ -1,7 +1,21 @@
-# What even is this?
+# This project is discontinued
+Tensor decided to continue supporting ProtonPlus kernel, so there's no point in this fork. Let's look into changes I've managed to make:
+
+Updated KSU-Next to v1.0.9 and added SuSFS.
+
+Added experimental APatch compatibility(not finished tho :( ).
+
+Added Android 16 support (thanks to Testamic).
+
+Modified build script to make it more debuggable and informative.
+
+I guess that's all, thanks for some people who supported this fork. Goodbye.
+
+
+## What even is this?
 This is an attempt to resurrect ProtonPlus kernel for Samsung Galaxy A52 and A72.
 ## What is the point if there's original version?
-It's dead, developer officially announced that he's discontinuing any support for it.
+It's dead, developer officially announced that he's discontinuing any support for it. **Not anymore**.
 ## Does this kernel support APatch?
 [This commit](https://github.com/notfleshka/ProtonPlus-Resurrected/commit/e3932ea6d0e1aae3bfbf70faf4e0f6b4478d34a4) added experimental support for APatch, it is expected to encounter errors. Please keep in mind that it's **not recommended** to use APatch on Samsung kernels because it requires disabling Samsung kernel protection.
 ## How do I build this kernel myself?
