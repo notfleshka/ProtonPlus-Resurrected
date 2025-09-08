@@ -3,7 +3,7 @@
 
 **Updated KSU-Next to v1.0.9 and added SuSFS.**
 
-**Added experimental APatch compatibility(not finished tho :( ).**
+**Added experimental APatch compatibility, not finished tho :( .**
 
 **Added Android 16 support (thanks to Testamic).**
 
